@@ -1,0 +1,26 @@
+.button {
+  
+  min-height: 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  color: white;
+}
+
+.grey {
+  background-color: grey;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.width{
+    width: 90px;
+
+}
+
+.dwidth{
+    width: 180px;
+}
