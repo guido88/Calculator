@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { execute, isOperation, updateOperand } from "../helpers/functions";
+import { execute, isOperation, updateOperand } from "../helpers/operations.js";
 
 const CalculatorContext = React.createContext({
   result: 0,
