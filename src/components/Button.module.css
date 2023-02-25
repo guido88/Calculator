@@ -1,26 +1,16 @@
 .button {
-  
-  min-height: 90px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid black;
+  background-color: #e0e0e0;
+  border: 0;
+  font-size: 1.5rem;
+  padding: 0;
+}
+
+.button.wide {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.button.orange {
+  background-color: #f5923e;
   color: white;
-}
-
-.grey {
-  background-color: grey;
-}
-
-.orange {
-  background-color: orange;
-}
-
-.width{
-    width: 90px;
-
-}
-
-.dwidth{
-    width: 180px;
 }

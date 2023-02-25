@@ -1,3 +1,5 @@
+//Currently  we update operation each time we click , should we wait after operation is executed?
+// Chained operations before clicking = not allowed atm
 import Big from "big.js";
 
 export const execute = (o1, o2, operation) => {
@@ -31,34 +33,26 @@ export const isOperation = (operation) =>
   operation === "X" ||
   operation === "/";
 
-export const updateOperand = (res, setOperand, isNewOperation) => {
+export const updateOperand = (res, operand, isNewOperation) => {
   if (isNumber(res)) {
-    setOperand((prevResult) => {
-      if (prevResult === "0" || isNewOperation) {
-        return res;
-      }
-      return prevResult.concat(res).toString();
-    });
+    if (operand === "0" || isNewOperation) {
+      return res;
+    }
+    return operand.concat(res).toString();
   }
 
   if (res === ".") {
-    setOperand((prevResult) => {
-      if (prevResult.includes(".")) {
-        return res;
-      }
-      return prevResult.concat(res).toString();
-    });
+    if (operand.includes(".")) {
+      return res;
+    }
+    return operand.concat(res).toString();
   }
 
   if (res === "+/-") {
-    setOperand((prevResult) => {
-      return (-prevResult).toString();
-    });
+    return (-operand).toString();
   }
 
   if (res === "%") {
-    setOperand((prevResult) => {
-      return Big(prevResult).div(Big(100)).toString();
-    });
+    return Big(operand).div(Big(100)).toString();
   }
 };

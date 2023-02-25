@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import { execute, isOperation, updateOperand } from "../helpers/functions";
 
 const CalculatorContext = React.createContext({
@@ -6,34 +6,83 @@ const CalculatorContext = React.createContext({
   calculateResult: (res) => {},
 });
 
+const initialState = {
+  firstOperand: "0",
+  secondOperand: "0",
+  operation: null,
+  isNewOperation: false,
+};
+
+const calculationReducer = (state, action) => {
+  console.log(state, action);
+
+  if (action.type === "NUMBER") {
+    if (!state.operation) {
+      return {
+        ...state,
+        firstOperand: updateOperand(
+          action.value,
+          state.firstOperand,
+          state.isNewOperation
+        ),
+        isNewOperation: false,
+      };
+    } else {
+      return {
+        ...state,
+        secondOperand: updateOperand(
+          action.value,
+          state.secondOperand,
+          state.isNewOperation
+        ),
+      };
+    }
+  }
+
+  if (action.type === "OPERATION") {
+    return {
+      ...state,
+      operation: action.value,
+    };
+  }
+
+  if (action.type === "=") {
+    if (state.firstOperand && state.secondOperand && state.operation) {
+      return {
+        firstOperand: execute(
+          state.firstOperand,
+          state.secondOperand,
+          state.operation
+        ).toString(),
+        secondOperand: "0",
+        operation: null,
+        isNewOperation: true,
+      };
+    }
+  }
+
+  if (action.type === "AC") {
+    return initialState;
+  }
+};
+
 export const CalculatorContextProvider = (props) => {
-  const [firstOperand, setFirstOperand] = useState("0");
-  const [secondOperand, setSecondOperand] = useState("0");
-  const [operation, setOperation] = useState(null);
-  const [isNewOperation, setIsNewOperation] = useState(false);
+  const [calculatorState, dispatchCalculator] = useReducer(
+    calculationReducer,
+    initialState
+  );
+
+  const { firstOperand, secondOperand, operation } = calculatorState;
+
   const calculateResultHandler = (res) => {
     if (isOperation(res)) {
-      setOperation(res);
+      dispatchCalculator({ type: "OPERATION", value: res });
     } else if (res === "=") {
-      if (firstOperand && secondOperand && operation) {
-        setFirstOperand((prevValue) => {
-          return execute(prevValue, secondOperand, operation).toString();
-        });
-      }
-      setSecondOperand("0");
-      setOperation(null);
-      setIsNewOperation(true);
+      dispatchCalculator({ type: "=" });
     } else if (res === "AC") {
-      setFirstOperand("0");
-      setSecondOperand("0");
-      setOperation(null);
+      dispatchCalculator({ type: "AC" });
     } else {
-      if (!operation) {
-        updateOperand(res, setFirstOperand, isNewOperation);
-        setIsNewOperation(false);
-      } else {
-        updateOperand(res, setSecondOperand, false);
-      }
+      dispatchCalculator({ type: "NUMBER", value: res });
     }
   };
 

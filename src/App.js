@@ -1,16 +1,11 @@
-import ButtonPanels from "./components/ButtonsPanel";
-import Display from "./components/Display";
+import CalculatorPanel from "./components/CalculatorPanel";
 import { CalculatorContextProvider } from "./store/calculator-context";
-import classes from "./App.module.css";
 
 function App() {
   return (
-    <div className={classes.calculator}>
-      <CalculatorContextProvider>
-        <Display />
-        <ButtonPanels />
-      </CalculatorContextProvider>
-    </div>
+    <CalculatorContextProvider>
+      <CalculatorPanel />
+    </CalculatorContextProvider>
   );
 }
 
