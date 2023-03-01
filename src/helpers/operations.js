@@ -11,7 +11,7 @@ export const isOperation = (operation) =>
 export const isSymbol = (operation) =>
   operation === "+/-" || operation === "." || operation === "%";
 
-export const execute = (o1, o2, operation) => {
+export const executeOperation = (o1, o2, operation) => {
   if (o1 === 0 && o2 === 0) return 0;
 
   const first = Big(o1);
@@ -34,7 +34,7 @@ export const execute = (o1, o2, operation) => {
   }
 };
 
-export const updateSymbol = (res, operand) => {
+export const updateOperandWithSymbol = (res, operand) => {
   if (res === ".") {
     if (!operand) {
       return "0.";
@@ -57,7 +57,7 @@ export const updateSymbol = (res, operand) => {
   }
 };
 
-export const updateOperand = (res, operand) => {
+export const updateOperandWithNumber = (res, operand) => {
   if (!operand || operand === "0") {
     return res;
   }

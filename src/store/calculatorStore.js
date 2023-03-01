@@ -1,9 +1,8 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import {
-  execute,
-  isNumber,
-  updateOperand,
-  updateSymbol,
+  executeOperation,
+  updateOperandWithNumber,
+  updateOperandWithSymbol,
 } from "../helpers/operations";
 
 const initialState = {
@@ -14,15 +13,6 @@ const initialState = {
   switchOperands: false,
 };
 
-const log = (state) => {
-  console.log(
-    state.firstOperand,
-    state.operation,
-    state.secondOperand,
-    state.result
-  );
-};
-
 const calculatorSlice = createSlice({
   name: "calculator",
   initialState,
@@ -30,30 +20,35 @@ const calculatorSlice = createSlice({
     addSymbol(state, action) {
       if (action.payload === "." && state.result) {
         state.firstOperand = "0.";
+        state.operation = null;
         state.result = null;
       } else {
         if (!state.operation && !state.secondOperand) {
-          state.firstOperand = updateSymbol(action.payload, state.firstOperand);
+          state.firstOperand = updateOperandWithSymbol(
+            action.payload,
+            state.firstOperand
+          );
         }
 
         if (state.operation && state.firstOperand) {
-          state.secondOperand = updateSymbol(
+          state.secondOperand = updateOperandWithSymbol(
             action.payload,
             state.secondOperand
           );
         }
       }
-
-      log(state);
     },
 
     addNumber(state, action) {
       if (!state.secondOperand && !state.operation) {
-        state.firstOperand = updateOperand(action.payload, state.firstOperand);
+        state.firstOperand = updateOperandWithNumber(
+          action.payload,
+          state.firstOperand
+        );
       }
 
       if (state.firstOperand && state.operation && !state.result) {
-        state.secondOperand = updateOperand(
+        state.secondOperand = updateOperandWithNumber(
           action.payload,
           state.secondOperand
         );
@@ -62,13 +57,11 @@ const calculatorSlice = createSlice({
       if (state.firstOperand && state.operation && state.result) {
         state.result = null;
         state.switchOperands = true;
-        state.secondOperand = updateOperand(
+        state.secondOperand = updateOperandWithNumber(
           action.payload,
           state.secondOperand
         );
       }
-
-      log(state);
     },
 
     addOperation(state, action) {
@@ -78,7 +71,7 @@ const calculatorSlice = createSlice({
         state.operation &&
         !state.result
       ) {
-        const result = execute(
+        const result = executeOperation(
           state.firstOperand,
           state.secondOperand,
           state.operation
@@ -90,23 +83,18 @@ const calculatorSlice = createSlice({
       }
 
       state.operation = action.payload;
-
-      log(state);
     },
 
-    reset: (state) => {
-      log(state);
-      return initialState;
-    },
+    reset: () => initialState,
 
-    addEqual(state) {
+    equal(state) {
       if (
         state.firstOperand &&
         !state.secondOperand &&
         state.operation &&
         state.result
       ) {
-        const result = execute(
+        const result = executeOperation(
           state.result,
           state.firstOperand,
           state.operation
@@ -114,7 +102,7 @@ const calculatorSlice = createSlice({
 
         state.result = result.toString();
       } else if (state.firstOperand && state.secondOperand && state.operation) {
-        const result = execute(
+        const result = executeOperation(
           state.firstOperand,
           state.secondOperand,
           state.operation
@@ -128,8 +116,6 @@ const calculatorSlice = createSlice({
         state.secondOperand = null;
         state.result = result.toString();
       }
-
-      log(state);
     },
   },
 });
@@ -137,10 +123,4 @@ const calculatorSlice = createSlice({
 const store = configureStore({ reducer: calculatorSlice.reducer });
 
 export const calculatorActions = calculatorSlice.actions;
-
 export default store;
-
-// 5+ 6 = 11 , continuando a premere =  17,23,29...  ovvero al risultato si aggiunge secondo operando
-// 5+6 = 11 , premendo un operazione esegui 5+6 e poi con =  esegui RISULTATO OP RISULTATO
-// se . dopo = o +/- e %  allora resetta a 0.
-// Se 5+6 e = 11 , se NUMERO e poi =  somma  NUMERO a 6 .., e = aggiunge sempre 6 al RIS ( numero dopo = rimpiazza NUMERO e resetta il risultato a nuovo NUM +6)

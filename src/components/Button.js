@@ -11,7 +11,7 @@ const Button = (props) => {
 
   const calculateResultHandler = () => {
     if (props.value === "=") {
-      dispatch(calculatorActions.addEqual());
+      dispatch(calculatorActions.equal());
     } else if (props.value === "AC") {
       dispatch(calculatorActions.reset());
     } else if (isNumber(props.value)) {
