@@ -1,6 +1,15 @@
-//Currently  we update operation each time we click , should we wait after operation is executed?
-// Chained operations before clicking = not allowed atm
 import Big from "big.js";
+
+export const isNumber = (number) => !isNaN(number);
+
+export const isOperation = (operation) =>
+  operation === "+" ||
+  operation === "-" ||
+  operation === "X" ||
+  operation === "/";
+
+export const isSymbol = (operation) =>
+  operation === "+/-" || operation === "." || operation === "%";
 
 export const execute = (o1, o2, operation) => {
   if (o1 === 0 && o2 === 0) return 0;
@@ -25,25 +34,13 @@ export const execute = (o1, o2, operation) => {
   }
 };
 
-export const isNumber = (number) => !isNaN(number);
-
-export const isOperation = (operation) =>
-  operation === "+" ||
-  operation === "-" ||
-  operation === "X" ||
-  operation === "/";
-
-export const updateOperand = (res, operand, isNewOperation) => {
-  if (isNumber(res)) {
-    if (operand === "0" || isNewOperation) {
-      return res;
-    }
-    return operand.concat(res).toString();
-  }
-
+export const updateSymbol = (res, operand) => {
   if (res === ".") {
+    if (!operand) {
+      return "0.";
+    }
     if (operand.includes(".")) {
-      return res;
+      return operand;
     }
     return operand.concat(res).toString();
   }
@@ -53,6 +50,16 @@ export const updateOperand = (res, operand, isNewOperation) => {
   }
 
   if (res === "%") {
+    if (!operand) {
+      return "0";
+    }
     return Big(operand).div(Big(100)).toString();
   }
+};
+
+export const updateOperand = (res, operand) => {
+  if (!operand || operand === "0") {
+    return res;
+  }
+  return operand.concat(res).toString();
 };

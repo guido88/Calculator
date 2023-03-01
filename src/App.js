@@ -1,11 +1,12 @@
+import { Provider } from "react-redux";
 import CalculatorPanel from "./components/CalculatorPanel";
-import { CalculatorContextProvider } from "./store/calculator-context";
+import store from "./store/calculatorStore";
 
 function App() {
   return (
-    <CalculatorContextProvider>
+    <Provider store={store}>
       <CalculatorPanel />
-    </CalculatorContextProvider>
+    </Provider>
   );
 }
 
