@@ -1,4 +1,4 @@
-A Simple Calculator
+A Simple Calculator. (https://guido88.github.io/Calculator/)
 ---
 
 Install
